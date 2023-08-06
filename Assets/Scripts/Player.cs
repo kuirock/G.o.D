@@ -4,22 +4,26 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using Effekseer;
+using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 public class Player : _Base
 {
-    private PlayerInput1 playerInput1_;　//InputSystemで操作
+    [SerializeField]//@@
+    int id = 0;                         // 0 : 剣士、1 : 魔法使い
+
+    PlayerInput1 playerInput1_;         // InputSystemで操作
 
     [SerializeField]
-    public AudioClip seSlash1, seSlash2, seSlash3, seMagicS, seJump;  //サウンド
+    public AudioClip seSlash1, seSlash2, seSlash3, seMagicS,seMagicL, seJump;  //サウンド
 
     [SerializeField]
-    float speed = 5.0f;                //移動速度
+    float speed = 3.0f;                 // 移動速度
     [SerializeField]
-    float dashSpeed = 4f;              //ダッシュの変数宣言
+    float dashSpeed = 4f;               // ダッシュの変数宣言
     //現在のスピードを保持しておく変数
-    float currentSpeed;
+    //float currentSpeed;
 
-    float dir = 1;                      //向き(1:右, -1:左)
+    float dir = 1;                //向き(1:右, -1:左)
     bool isRight;                       //右向き
 
     float blendRate = 0;                //ブレンド速度
@@ -36,8 +40,8 @@ public class Player : _Base
 
     int atkMode = 0;                    //攻撃用
 
-    [SerializeField]
-    private GameObject magic;           //魔法プレハブを格納
+    /*[SerializeField]
+    private GameObject magic;           //魔法プレハブを格納*/
     [SerializeField]
     private Transform magicPoint;       //アタックポイントを格納
 
@@ -45,6 +49,11 @@ public class Player : _Base
     private float attackTime = 0.3f;   //攻撃の間隔
     private float currentAttackTime;   //攻撃の間隔を管理
     private bool canAttack;            //攻撃可能状態かを指定するフラグ
+
+    [SerializeField]
+    private GameObject magicS, magicM, magicL;           // P2用 魔法プレハブを格納
+    enum MgcMode { PowerS, PowerM, PowerL };  // P2 の魔法用
+    MgcMode mode = MgcMode.PowerS;
 
     public Slider slider;              //スライダー
 
@@ -55,28 +64,55 @@ public class Player : _Base
     //エフェクト
     EffekseerEffectAsset[] effect = null;
     readonly Vector2 hitPos = new Vector2(0.66f, 0.595f);
-    
-    
-     //リスタート
+
+
+    // 
+    Vector2 _moveInputValue;
+    int deviceId = 0;                   // コントローラデバイスID保存用
+
+
+    //リスタート
     public override void Restart()
     {
-        slider.value = 1;             　　　　  //スライダーを最大にする
+        // 子のトランスフォームを得る
+        GameObject gc = transform.GetChild(0).gameObject;
+        anim = gc.GetComponent<Animator>();
 
+        // HPバー
+        slider.value = 1;                       // スライダーを最大にする
         slider.gameObject.SetActive(true);
-
         hp = hpMax;
 
-        isRight = true;                　　　　 //右向き
+        isRight = true;                         // 右向き
 
-        currentSpeed = speed;          　　　　 //現在のスピードをスピードに設定
+        currentAttackTime = attackTime;         // currentAttackTimeにattackTimeをセット。
 
-        currentAttackTime = attackTime; 　　　　//currentAttackTimeにattackTimeをセット。
+        // InputSystem
+        playerInput1_ = new PlayerInput1();     // コントローラーで操作する用
+        // 移動
+        playerInput1_.Player.Move.started += OnMove;
+        playerInput1_.Player.Move.performed += OnMove;
+        playerInput1_.Player.Move.canceled += OnMove;
+        // ジャンプ
+        playerInput1_.Player.Jump.started += OnJump;
 
-        playerInput1_ = new PlayerInput1();　　//コントローラーで操作する用
+        // 剣攻撃
+        playerInput1_.Player.Slash.started += OnAttack;
+        /*// 剣・上攻撃
+        playerInput1_.Player.SlashOver.started += OnAttack;*/
+
+        // 魔法
+        if (id == 1)
+        {
+            playerInput1_.Player.Magic.started += OnMagicCharge;
+            //playerInput1_.Player.Magic.performed += OnMagicCharge;
+            playerInput1_.Player.Magic.canceled += OnMagicFiring;
+        }
+
         playerInput1_.Enable();
 
         //エフェクトを取得する
-        if(effect == null)
+        if (effect == null)
         {
             effect = new EffekseerEffectAsset[1];
             effect[0] = Resources.Load<EffekseerEffectAsset>("effect");
@@ -84,117 +120,71 @@ public class Player : _Base
         }
     }
 
+
     void Update()
     {
-        // DebugPrint("HP : " + hp);
+        // コントローラーチェック、1P だけはコントローラーなしで動く
+        if(id != 0 && id >= Gamepad.all.Count){ return; }
+        deviceId = Gamepad.all[id].deviceId;    // deviceId にコントローラーIDが入る
 
-        Move();
-        Attack();
-        Magic();
-        Jump();
+        //Attack();
+        //Magic();
         Shield();
         ChangeState();
         ChangeAnimation();
         SliderMove();
     }
-    
-    //移動・回転
+
+    void FixedUpdate()
+    {
+        Move();                                 // 移動
+    }
+
     void Move()
     {
-        if(isAtkMotion){return;}                 //攻撃中ならば移動できない
-
-        float x = Input.GetAxisRaw("Horizontal");
-        if(x > 0)
-        {
-            dir = 1;
-            rb.velocity = new Vector3(currentSpeed * dir, rb.velocity.y, 0);
-            blendRate += changeRate;
-            if(blendRate > 1){blendRate = 1;}
-            anim.SetFloat("speed", blendRate);   //歩き
-
-            //レフトシフトが押されてるときダッシュ
-            if(playerInput1_.Player.Dash.ReadValue<float>() != 0f)
-            {
-                //通常スピードにダッシュスピードをかける
-                currentSpeed = speed * dashSpeed;
-                anim.SetBool("dash", true);
-            }
-            //通常時
-            else
-            {
-                //通常スピードに戻す
-                currentSpeed = speed;
-                anim.SetBool("dash", false);
-            }
-            //右向きで左入力なら180°回転
-            if(isRight && x < 0)
-            {
-                transform.Rotate(0f, 180f, 0f);
-                isRight = false;
-            }
-            //左向きで右入力なら180°回転
-            if(!isRight && x > 0)
-            {
-                transform.Rotate(0f, 180f, 0f);
-                isRight = true;
-            }
-        }
-        else if(x < 0)
-        {
-            dir = -1;
-            rb.velocity = new Vector3(currentSpeed * dir, rb.velocity.y, 0);
-            blendRate += changeRate;
-            if(blendRate > 1){blendRate = 1;}
-            anim.SetFloat("speed", blendRate);   //歩き
-
-            //レフトシフトが押されてるときダッシュ
-            if(playerInput1_.Player.Dash.ReadValue<float>() != 0f)
-            {
-                //通常スピードにダッシュスピードをかける
-                currentSpeed = speed * dashSpeed;
-                anim.SetBool("dash", true);
-            }
-            //通常時
-            else
-            {
-                //通常スピードに戻す
-                currentSpeed = speed;
-                anim.SetBool("dash", false);
-            } 
-            //右向きで左入力なら180°回転
-            if(isRight && x < 0)
-            {
-                transform.Rotate(0f, 180f, 0f);
-                isRight = false;
-            }
-            //左向きで右入力なら180°回転
-            if(!isRight && x > 0)
-            {
-                transform.Rotate(0f, 180f, 0f);
-                isRight = true;
-            }
+        float x = _moveInputValue.x;            // ここを変更 InputSyste の値を得る
+        if(x != 0)
+        {   // 移動、左右どちらも処理する
+            dir = x > 0 ? 1: -1;                // 向き
+            rb.velocity = new Vector3(speed * x, rb.velocity.y, 0);
+            blendRate += changeRate;            // アニメーションブレンド
+            if(blendRate > 1){ blendRate = 1;}
+            anim.SetFloat("speed", blendRate);
         }
         else
-        {
+        {   // 停止、アニメーションを徐々に IDLE へ
             blendRate -= changeRate;
             if(blendRate < 0){blendRate = 0;}
-            anim.SetFloat("speed", blendRate);  //止まる
+            anim.SetFloat("speed", blendRate);
         }
+        // 向き
+        Vector2 scale = transform.localScale;
+        scale.x = dir;
+        transform.localScale = scale;
     }
 
-    //ジャンプ
-    void Jump()
+    // 移動
+    void OnMove(InputAction.CallbackContext context)
     {
-        if(isGround)
-        {
-            if(playerInput1_.Player.Jump.triggered)
-            {
-                this.rb.AddForce(transform.up * this.jumpForce);
-                isGround = false;
-                SoundPlay(seJump);
-            }
-        }
+        // コントローラー ID チェック
+        if (deviceId != context.control.device.deviceId) { return; }
+
+        if (isAtkMotion) { return; }            // 攻撃中ならば移動できない
+        _moveInputValue = context.ReadValue<Vector2>();
     }
+
+    // ジャンプ
+    void OnJump(InputAction.CallbackContext context)
+    {
+        // コントローラー ID チェック
+        if (deviceId != context.control.device.deviceId) { return; }
+
+        if (!isGround){ return;}
+        rb.AddForce(transform.up * jumpForce);
+        isGround = false;
+        SoundPlay(seJump);
+    }
+
 
     void ChangeState()
     {
@@ -277,49 +267,46 @@ public class Player : _Base
     }
 
     //物理攻撃
-    void Attack()
+    void OnAttack(InputAction.CallbackContext context)
     {
+        // コントローラー ID チェック
+        if (deviceId != context.control.device.deviceId) { return; }
+
         //通常・空中攻撃
-        switch(atkMode)
+        switch (atkMode)
         {
             //Attack 1
             case 0:
-                if(playerInput1_.Player.Slash.triggered)
-                {
+               //playerInput1_.Player.Slash.started += OnAttack;
+
                     anim.SetTrigger("attack1");
                     atkMode++;
                     SoundPlay(seSlash1);
-                }
                 break;
             //Attack 2
             case 1:
-                if(playerInput1_.Player.Slash.triggered)
-                {
+               //playerInput1_.Player.Slash.started += OnAttack;
+
                     anim.SetTrigger("attack1");
                     atkMode++;
                     SoundPlay(seSlash2);
-                }
                 break;
             //Attack 3
             case 2:
-                if(playerInput1_.Player.Slash.triggered)
-                {
+               //playerInput1_.Player.Slash.started += OnAttack;
+                
                     anim.SetTrigger("attack1");
-                    atkMode++;
+                    atkMode = 0;
                     SoundPlay(seSlash3);
-                }
                 break;
         }
 
-        //上攻撃
-        if(playerInput1_.Player.SlashOver.triggered)
-        {
-            anim.SetTrigger("attack2");
-            SoundPlay(seSlash1);
-        }
+        /*//上攻撃  
+        anim.SetTrigger("attack2");
+        SoundPlay(seSlash1);*/
     }
 
-    void Magic()
+    /*void Magic()
     {
         if(isAtkMotion){return;}                 //攻撃中ならば攻撃できない
 
@@ -330,19 +317,111 @@ public class Player : _Base
             canAttack = true;                    //指定時間を超えたら攻撃可能にする
         }
 
-         if (playerInput1_.Player.Magic.triggered)
+        if (canAttack)
+        {                
+            //第一引数に生成するオブジェクト、第二引数にVector3型の座標、第三引数に回転の情報
+            Instantiate(magic, magicPoint.position, transform.rotation);
+            canAttack = false;　              //攻撃フラグをfalseにする
+            attackTime = 0f;　                //attackTimeを0に戻す
+            anim.SetTrigger("magicFiring");
+            SoundPlay(seMagicS);
+         }
+    }*/
+    
+    void OnMagicCharge(InputAction.CallbackContext context)
+    {
+        // コントローラー ID チェック
+        if (deviceId != context.control.device.deviceId) { return; }
+
+        anim.SetBool("mgcCharge", true);
+        //rb.bodyType = RigidbodyType2D.Static;
+    }
+
+    void OnMagicFiring(InputAction.CallbackContext context)
+    {
+
+        // コントローラー ID チェック
+        //if (deviceId != context.control.device.deviceId) { return; }
+
+        anim.SetBool("mgcCharge", false);
+        //rb.bodyType = RigidbodyType2D.Dynamic;
+
+        //switch (mode)
+        switch (magic)
         {
-            if (canAttack)
-            {                
-                //第一引数に生成するオブジェクト、第二引数にVector3型の座標、第三引数に回転の情報
-                Instantiate(magic, magicPoint.position, transform.rotation);
-                canAttack = false;　              //攻撃フラグをfalseにする
-                attackTime = 0f;　                //attackTimeを0に戻す
-                anim.SetTrigger("magicFiring");
-                SoundPlay(seMagicS);
-            }
+            //            case MgcMode.PowerS:
+            case 0:
+                MagicS();
+                canAttack = false;               //攻撃フラグをfalseにする
+                attackTime = 0f;                 //attackTimeを0に戻す
+                break;
+            //            case MgcMode.PowerM:
+            case 1:
+                MagicM();
+                canAttack = false;               //攻撃フラグをfalseにする
+                attackTime = 0f;                 //attackTimeを0に戻す
+                break;
+            //case MgcMode.PowerL:
+            case 2:
+                MagicL();
+                canAttack = false;               //攻撃フラグをfalseにする
+                attackTime = 0f;                 //attackTimeを0に戻す
+                break;
+        }
+
+        magic = 0;
+    }
+
+    int magic = 0;
+    //魔法チャージのイベント
+    public void MagicChargeEvent(int num)
+    {
+
+        //溜め段階
+        switch (num)
+        {
+            //溜め開始　sizeS
+            case 0:
+                magic = -1;
+                mode = MgcMode.PowerS;
+                break;
+            //sizeM
+            case 1:
+                magic = 1;
+                mode = MgcMode.PowerM;
+                break;
+            //sizeL
+            case 2:
+                magic = 2;
+                mode = MgcMode.PowerL;
+                break;
         }
     }
+
+    void MagicS()
+    {
+        //第一引数に生成するオブジェクト、第二引数にVector3型の座標、第三引数に回転の情報
+        Instantiate(magicS, magicPoint.position, transform.rotation);
+        anim.SetTrigger("magicFiring");
+        SoundPlay(seMagicS);
+    }
+
+    void MagicM()
+    {
+        //第一引数に生成するオブジェクト、第二引数にVector3型の座標、第三引数に回転の情報
+        Instantiate(magicM, magicPoint.position, transform.rotation);
+        anim.SetTrigger("magicFiring");
+        SoundPlay(seMagicS);
+    }
+
+    void MagicL()
+    {
+        //第一引数に生成するオブジェクト、第二引数にVector3型の座標、第三引数に回転の情報
+        Instantiate(magicL, magicPoint.position, transform.rotation);
+        anim.SetTrigger("magicFiring");
+        SoundPlay(seMagicL);
+    }
+
 
     //攻撃アニメーションのイベント
     public void AttackEvent(int num)

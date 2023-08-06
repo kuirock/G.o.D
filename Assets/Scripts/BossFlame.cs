@@ -13,7 +13,7 @@ public class BossFlame : _Base
     float speed = 1.0f;    　　　　　　　　　　　    //移動速度
 
     Player pl;              　　　　　　　　　　　   //プレイヤー
-    //Player2 pl2;                                 //2P
+    //Player2 pl2;                                     //2P
 
     enum BossMode{Standby, Setup, Attack};
     BossMode mode = BossMode.Standby;
@@ -27,7 +27,7 @@ public class BossFlame : _Base
 
     float speedX;
     float dir = 1;                 　　　　　　　   //向き
-    float dir2 = 1;
+    //float dir2 = 1;
 
     float StartBossFightTime = 1.5f;             //ボス戦が始まる時間
 
@@ -50,8 +50,8 @@ public class BossFlame : _Base
         isLeft = true;                          //左を向いている
         slider.value = 1;                       //スライダーを最大にする
         hp = hpMax;
-        pl = GameObject.Find("Player").GetComponent<Player>();
-        //pl2 = GameObject.Find("Player2").GetComponent<Player2>();
+        pl = GameObject.Find("P1").GetComponent<Player>();
+        //pl2 = GameObject.Find("P2").GetComponent<Player2>();
         anim.SetFloat("speed", 0);              //アイドル
         anim.SetInteger("hp", hp);              //hp
 
@@ -96,7 +96,7 @@ public class BossFlame : _Base
         if(StartBossFightTime <= 0)
         {
             mode = BossMode.Setup;
-            moveTime = Random.Range(2f, 7f);  　　　　　//2~7秒の間で乱数を得る
+            moveTime = Random.Range(2f, 5f);  　　　　　//2~5秒の間で乱数を得る
         }
     }
 
@@ -105,7 +105,7 @@ public class BossFlame : _Base
         //プレイヤー1との距離を取得
         float dis = Vector2.Distance(pl.transform.position, xy);
         //2Pとの距離
-       // float dis2 = Vector2.Distance(pl2.transform.position, xy);
+        //float dis2 = Vector2.Distance(pl2.transform.position, xy);
         moveTime -= Time.deltaTime;
         rb.bodyType = RigidbodyType2D.Dynamic;  　　　   　//動くように戻す
 
@@ -162,7 +162,7 @@ public class BossFlame : _Base
                     mode = BossMode.Standby;
                 }
             }
-            else if(dis > 9 && dis <= 15 /*| dis2 > 9 && dis2 <= 15*/)
+            else if(dis > 9 && dis <= 15 /*|| dis2 > 9 && dis2 <= 15*/)
             {
                 if(rndmJump == 1)
                 {
@@ -176,7 +176,7 @@ public class BossFlame : _Base
                     mode = BossMode.Standby;
                 }
             }
-            else if(dis > 15　/* || dis2 > 15*/)
+            else if(dis > 15 /*|| dis2 > 15*/)
             {
                 anim.SetTrigger("attackF");
             }

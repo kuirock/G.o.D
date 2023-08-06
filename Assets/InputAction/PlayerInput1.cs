@@ -60,6 +60,33 @@ public partial class @PlayerInput1: IInputActionCollection2, IDisposable
                     ""id"": ""68acb584-96bb-434b-b655-1ddc26c1b6c0"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
+                    ""interactions"": ""Hold"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MagicS"",
+                    ""type"": ""Button"",
+                    ""id"": ""c69da929-6696-4f12-9ae3-f1c2daf32c34"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MagicM"",
+                    ""type"": ""Button"",
+                    ""id"": ""35002e02-20de-49f0-99e2-6bd63e055a9e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MagicL"",
+                    ""type"": ""Button"",
+                    ""id"": ""e578698a-4ead-41a5-8819-7c1cfdb76739"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
                 },
@@ -103,11 +130,22 @@ public partial class @PlayerInput1: IInputActionCollection2, IDisposable
             ""bindings"": [
                 {
                     ""name"": """",
-                    ""id"": ""978bfe49-cc26-4a3d-ab7b-7d7a29327403"",
-                    ""path"": ""<HID::DragonRise Inc.   Generic   USB  Joystick  >/stick"",
+                    ""id"": ""5e092c4a-5d05-45a6-85ea-d10e45c09fba"",
+                    ""path"": ""<Gamepad>/leftStick"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Gamepad;Joystick"",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3ab87970-6070-4eaf-8b6d-dfaf0313ef3c"",
+                    ""path"": ""<Gamepad>/dpad"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -135,31 +173,9 @@ public partial class @PlayerInput1: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""up"",
-                    ""id"": ""8180e8bd-4097-4f4e-ab88-4523101a6ce9"",
-                    ""path"": ""<Keyboard>/upArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
                     ""name"": ""down"",
                     ""id"": ""320bffee-a40b-4347-ac70-c210eb8bc73a"",
                     ""path"": ""<Keyboard>/s"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""down"",
-                    ""id"": ""1c5327b5-f71c-4f60-99c7-4e737386f1d1"",
-                    ""path"": ""<Keyboard>/downArrow"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
@@ -179,17 +195,6 @@ public partial class @PlayerInput1: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""left"",
-                    ""id"": ""2e46982e-44cc-431b-9f0b-c11910bf467a"",
-                    ""path"": ""<Keyboard>/leftArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
                     ""name"": ""right"",
                     ""id"": ""fcfe95b8-67b9-4526-84b5-5d0bc98d6400"",
                     ""path"": ""<Keyboard>/d"",
@@ -199,50 +204,6 @@ public partial class @PlayerInput1: IInputActionCollection2, IDisposable
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""right"",
-                    ""id"": ""77bff152-3580-4b21-b6de-dcd0c7e41164"",
-                    ""path"": ""<Keyboard>/rightArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""1635d3fe-58b6-4ba9-a4e2-f4b964f6b5c8"",
-                    ""path"": ""<XRController>/{Primary2DAxis}"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""XR"",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""3ea4d645-4504-4529-b061-ab81934c3752"",
-                    ""path"": ""<Joystick>/stick"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Joystick"",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""4e58a4cb-b883-4552-b685-faa29697b634"",
-                    ""path"": ""<HID::DragonRise Inc.   Generic   USB  Joystick  >/trigger"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad;Joystick"",
-                    ""action"": ""Jump"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
@@ -257,12 +218,12 @@ public partial class @PlayerInput1: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""a320e14e-70a4-4302-b35b-d8fec53009f0"",
-                    ""path"": ""<HID::DragonRise Inc.   Generic   USB  Joystick  >/button4"",
+                    ""id"": ""69ca9b9b-9f28-49b7-af6a-58fd8459d67b"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Gamepad;Joystick"",
-                    ""action"": ""Slash"",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -279,12 +240,12 @@ public partial class @PlayerInput1: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""7cb86748-868c-4f38-86a6-c8f0b16c6bbf"",
-                    ""path"": ""<HID::DragonRise Inc.   Generic   USB  Joystick  >/button2"",
+                    ""id"": ""d924e9ec-458a-4c75-9cfd-8232b069f9f8"",
+                    ""path"": ""<Gamepad>/buttonWest"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Gamepad;Joystick"",
-                    ""action"": ""SlashOver"",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Slash"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -301,12 +262,12 @@ public partial class @PlayerInput1: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""0ba0931a-ecb0-45ce-aad3-665ea0fa54b9"",
-                    ""path"": ""<HID::DragonRise Inc.   Generic   USB  Joystick  >/button3"",
+                    ""id"": ""9ee47fd4-d04d-4314-bcea-5dca5628e641"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Gamepad;Joystick"",
-                    ""action"": ""Magic"",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""SlashOver"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -317,6 +278,17 @@ public partial class @PlayerInput1: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
+                    ""action"": ""Magic"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b04ccb73-e50f-406b-a297-23b26362d91c"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""Magic"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -384,6 +356,50 @@ public partial class @PlayerInput1: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""test"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b048a707-3c17-4bc1-816a-1e3de139d6e2"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""MagicS"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""44a5a48a-3902-4cf0-abb5-f1f999062e21"",
+                    ""path"": ""<Keyboard>/m"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""MagicS"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""44ebd80d-5f6f-4945-8381-3f30e083205f"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""MagicM"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""73a60ac7-3e16-45bb-a3b8-5fcfaa3ed2a8"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""MagicL"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -904,6 +920,34 @@ public partial class @PlayerInput1: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Sorcerer"",
+            ""id"": ""ce89d8e8-9a22-4f9e-b60f-1f843aa547ae"",
+            ""actions"": [
+                {
+                    ""name"": ""New action"",
+                    ""type"": ""Button"",
+                    ""id"": ""7fa8f403-435b-4dbe-90f4-587e0465c006"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""031a013b-be18-4ecd-9699-c83deb80630f"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""New action"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -975,6 +1019,9 @@ public partial class @PlayerInput1: IInputActionCollection2, IDisposable
         m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
         m_Player_Shield = m_Player.FindAction("Shield", throwIfNotFound: true);
         m_Player_Magic = m_Player.FindAction("Magic", throwIfNotFound: true);
+        m_Player_MagicS = m_Player.FindAction("MagicS", throwIfNotFound: true);
+        m_Player_MagicM = m_Player.FindAction("MagicM", throwIfNotFound: true);
+        m_Player_MagicL = m_Player.FindAction("MagicL", throwIfNotFound: true);
         m_Player_SlashOver = m_Player.FindAction("SlashOver", throwIfNotFound: true);
         m_Player_Slash = m_Player.FindAction("Slash", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
@@ -991,6 +1038,9 @@ public partial class @PlayerInput1: IInputActionCollection2, IDisposable
         m_UI_RightClick = m_UI.FindAction("RightClick", throwIfNotFound: true);
         m_UI_TrackedDevicePosition = m_UI.FindAction("TrackedDevicePosition", throwIfNotFound: true);
         m_UI_TrackedDeviceOrientation = m_UI.FindAction("TrackedDeviceOrientation", throwIfNotFound: true);
+        // Sorcerer
+        m_Sorcerer = asset.FindActionMap("Sorcerer", throwIfNotFound: true);
+        m_Sorcerer_Newaction = m_Sorcerer.FindAction("New action", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -1056,6 +1106,9 @@ public partial class @PlayerInput1: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Dash;
     private readonly InputAction m_Player_Shield;
     private readonly InputAction m_Player_Magic;
+    private readonly InputAction m_Player_MagicS;
+    private readonly InputAction m_Player_MagicM;
+    private readonly InputAction m_Player_MagicL;
     private readonly InputAction m_Player_SlashOver;
     private readonly InputAction m_Player_Slash;
     private readonly InputAction m_Player_Jump;
@@ -1068,6 +1121,9 @@ public partial class @PlayerInput1: IInputActionCollection2, IDisposable
         public InputAction @Dash => m_Wrapper.m_Player_Dash;
         public InputAction @Shield => m_Wrapper.m_Player_Shield;
         public InputAction @Magic => m_Wrapper.m_Player_Magic;
+        public InputAction @MagicS => m_Wrapper.m_Player_MagicS;
+        public InputAction @MagicM => m_Wrapper.m_Player_MagicM;
+        public InputAction @MagicL => m_Wrapper.m_Player_MagicL;
         public InputAction @SlashOver => m_Wrapper.m_Player_SlashOver;
         public InputAction @Slash => m_Wrapper.m_Player_Slash;
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
@@ -1093,6 +1149,15 @@ public partial class @PlayerInput1: IInputActionCollection2, IDisposable
             @Magic.started += instance.OnMagic;
             @Magic.performed += instance.OnMagic;
             @Magic.canceled += instance.OnMagic;
+            @MagicS.started += instance.OnMagicS;
+            @MagicS.performed += instance.OnMagicS;
+            @MagicS.canceled += instance.OnMagicS;
+            @MagicM.started += instance.OnMagicM;
+            @MagicM.performed += instance.OnMagicM;
+            @MagicM.canceled += instance.OnMagicM;
+            @MagicL.started += instance.OnMagicL;
+            @MagicL.performed += instance.OnMagicL;
+            @MagicL.canceled += instance.OnMagicL;
             @SlashOver.started += instance.OnSlashOver;
             @SlashOver.performed += instance.OnSlashOver;
             @SlashOver.canceled += instance.OnSlashOver;
@@ -1121,6 +1186,15 @@ public partial class @PlayerInput1: IInputActionCollection2, IDisposable
             @Magic.started -= instance.OnMagic;
             @Magic.performed -= instance.OnMagic;
             @Magic.canceled -= instance.OnMagic;
+            @MagicS.started -= instance.OnMagicS;
+            @MagicS.performed -= instance.OnMagicS;
+            @MagicS.canceled -= instance.OnMagicS;
+            @MagicM.started -= instance.OnMagicM;
+            @MagicM.performed -= instance.OnMagicM;
+            @MagicM.canceled -= instance.OnMagicM;
+            @MagicL.started -= instance.OnMagicL;
+            @MagicL.performed -= instance.OnMagicL;
+            @MagicL.canceled -= instance.OnMagicL;
             @SlashOver.started -= instance.OnSlashOver;
             @SlashOver.performed -= instance.OnSlashOver;
             @SlashOver.canceled -= instance.OnSlashOver;
@@ -1268,6 +1342,52 @@ public partial class @PlayerInput1: IInputActionCollection2, IDisposable
         }
     }
     public UIActions @UI => new UIActions(this);
+
+    // Sorcerer
+    private readonly InputActionMap m_Sorcerer;
+    private List<ISorcererActions> m_SorcererActionsCallbackInterfaces = new List<ISorcererActions>();
+    private readonly InputAction m_Sorcerer_Newaction;
+    public struct SorcererActions
+    {
+        private @PlayerInput1 m_Wrapper;
+        public SorcererActions(@PlayerInput1 wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Newaction => m_Wrapper.m_Sorcerer_Newaction;
+        public InputActionMap Get() { return m_Wrapper.m_Sorcerer; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(SorcererActions set) { return set.Get(); }
+        public void AddCallbacks(ISorcererActions instance)
+        {
+            if (instance == null || m_Wrapper.m_SorcererActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_SorcererActionsCallbackInterfaces.Add(instance);
+            @Newaction.started += instance.OnNewaction;
+            @Newaction.performed += instance.OnNewaction;
+            @Newaction.canceled += instance.OnNewaction;
+        }
+
+        private void UnregisterCallbacks(ISorcererActions instance)
+        {
+            @Newaction.started -= instance.OnNewaction;
+            @Newaction.performed -= instance.OnNewaction;
+            @Newaction.canceled -= instance.OnNewaction;
+        }
+
+        public void RemoveCallbacks(ISorcererActions instance)
+        {
+            if (m_Wrapper.m_SorcererActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(ISorcererActions instance)
+        {
+            foreach (var item in m_Wrapper.m_SorcererActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_SorcererActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public SorcererActions @Sorcerer => new SorcererActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     public InputControlScheme KeyboardMouseScheme
     {
@@ -1319,6 +1439,9 @@ public partial class @PlayerInput1: IInputActionCollection2, IDisposable
         void OnDash(InputAction.CallbackContext context);
         void OnShield(InputAction.CallbackContext context);
         void OnMagic(InputAction.CallbackContext context);
+        void OnMagicS(InputAction.CallbackContext context);
+        void OnMagicM(InputAction.CallbackContext context);
+        void OnMagicL(InputAction.CallbackContext context);
         void OnSlashOver(InputAction.CallbackContext context);
         void OnSlash(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
@@ -1336,5 +1459,9 @@ public partial class @PlayerInput1: IInputActionCollection2, IDisposable
         void OnRightClick(InputAction.CallbackContext context);
         void OnTrackedDevicePosition(InputAction.CallbackContext context);
         void OnTrackedDeviceOrientation(InputAction.CallbackContext context);
+    }
+    public interface ISorcererActions
+    {
+        void OnNewaction(InputAction.CallbackContext context);
     }
 }

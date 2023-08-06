@@ -8,13 +8,14 @@ public class Magic : MonoBehaviour
     [SerializeField]
     private float speed = 5; //魔法の移動スピード
     Rigidbody2D rb;
+
     //エフェクト
    // EffekseerEffectAsset effect;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        rb.velocity = transform.right * speed;
+        rb.velocity = new Vector3(speed,0,0);
         //自動破裂
         Destroy(this.gameObject, 1.5f);
 

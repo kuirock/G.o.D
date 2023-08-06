@@ -36,11 +36,10 @@ public class _Base : MonoBehaviour
         rb    = GetComponent<Rigidbody2D>();
         snd   = gameObject.AddComponent<AudioSource>();     //サウンドを追加する
         scale = gameObject.transform.localScale.x;          //元のサイズ
-        sp = GetComponent<SpriteRenderer>();
-        /*#if UNITY_EDITOR
+        sp    = GetComponent<SpriteRenderer>();
+        #if UNITY_EDITOR
             debug = GameObject.Find("DebugText").GetComponent<TextMeshProUGUI>();
         #endif
-        */
 
         Restart();
     }
@@ -127,7 +126,11 @@ public class _Base : MonoBehaviour
     //デバッグ情報表示
     public void DebugPrint(string str)
     {
-        #if UNITY_EDITOR
+    #if UNITY_EDITOR
+            if (debug == null)
+            {
+                debug = GameObject.Find("DebugText").GetComponent<TextMeshProUGUI>();
+            }
            debug.text = str;
         #endif
     }
