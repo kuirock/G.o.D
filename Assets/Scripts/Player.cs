@@ -8,7 +8,7 @@ using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 public class Player : _Base
 {
-    [SerializeField]//@@
+    [SerializeField]
     int id = 0;                         // 0 : 剣士、1 : 魔法使い
 
     PlayerInput1 playerInput1_;         // InputSystemで操作
@@ -24,7 +24,6 @@ public class Player : _Base
     //float currentSpeed;
 
     float dir = 1;                //向き(1:右, -1:左)
-    bool isRight;                       //右向き
 
     float blendRate = 0;                //ブレンド速度
     readonly float changeRate = 0.05f;  //アニメーションの変化速度
@@ -40,8 +39,6 @@ public class Player : _Base
 
     int atkMode = 0;                    //攻撃用
 
-    /*[SerializeField]
-    private GameObject magic;           //魔法プレハブを格納*/
     [SerializeField]
     private Transform magicPoint;       //アタックポイントを格納
 
@@ -50,12 +47,14 @@ public class Player : _Base
     private float currentAttackTime;   //攻撃の間隔を管理
     private bool canAttack;            //攻撃可能状態かを指定するフラグ
 
+
     [SerializeField]
     private GameObject magicS, magicM, magicL;           // P2用 魔法プレハブを格納
-    enum MgcMode { PowerS, PowerM, PowerL };  // P2 の魔法用
-    MgcMode mode = MgcMode.PowerS;
+    //enum MgcMode { PowerS, PowerM, PowerL };  // P2 の魔法用
+    //MgcMode mode = MgcMode.PowerS;
 
-    public Slider slider;              //スライダー
+    [SerializeField]
+    Slider slider;                      // ライフ表示用スライダー
 
     /*private bool isShield = false;
     private float pressDuration = 0.5f; // 長押しの時間（秒）
@@ -63,12 +62,16 @@ public class Player : _Base
 
     //エフェクト
     EffekseerEffectAsset[] effect = null;
-    readonly Vector2 hitPos = new Vector2(0.66f, 0.595f);
+    readonly Vector2 hitPos = new Vector2(1f, 0.595f);
 
 
     // 
     Vector2 _moveInputValue;
+    [SerializeField]
     int deviceId = 0;                   // コントローラデバイスID保存用
+
+    // 2P 魔法使い
+    MagicCharge magic;                  // 2P 魔法力
 
 
     //リスタート
@@ -83,30 +86,38 @@ public class Player : _Base
         slider.gameObject.SetActive(true);
         hp = hpMax;
 
-        isRight = true;                         // 右向き
-
         currentAttackTime = attackTime;         // currentAttackTimeにattackTimeをセット。
+        canAttack = false;
 
         // InputSystem
         playerInput1_ = new PlayerInput1();     // コントローラーで操作する用
+
         // 移動
         playerInput1_.Player.Move.started += OnMove;
         playerInput1_.Player.Move.performed += OnMove;
         playerInput1_.Player.Move.canceled += OnMove;
+        
         // ジャンプ
         playerInput1_.Player.Jump.started += OnJump;
 
-        // 剣攻撃
-        playerInput1_.Player.Slash.started += OnAttack;
-        /*// 剣・上攻撃
-        playerInput1_.Player.SlashOver.started += OnAttack;*/
-
-        // 魔法
-        if (id == 1)
+        // 1P
+        if(id == 0 && deviceId == 0)
         {
-            playerInput1_.Player.Magic.started += OnMagicCharge;
-            //playerInput1_.Player.Magic.performed += OnMagicCharge;
-            playerInput1_.Player.Magic.canceled += OnMagicFiring;
+                // 剣攻撃
+                playerInput1_.Player.Slash.started += OnAttack;
+                /*// 剣・上攻撃
+                playerInput1_.Player.SlashOver.started += OnAttack;*/
+        }
+        // 2P
+        else if (id == 1 && deviceId == 1)
+        {
+                // 魔法
+                playerInput1_.Player.Magic.started += OnMagicCharge;
+                //playerInput1_.Player.Magic.performed += OnMagicCharge;
+                playerInput1_.Player.Magic.canceled += OnMagicFiring;
+
+                // 2P しか通らないところで魔法力を得ておく
+                magic = transform.GetChild(0).GetComponent<MagicCharge>();
         }
 
         playerInput1_.Enable();
@@ -129,10 +140,18 @@ public class Player : _Base
 
         //Attack();
         //Magic();
-        Shield();
+       // Shield();
         ChangeState();
         ChangeAnimation();
         SliderMove();
+
+        //魔法の発射間隔管理
+        attackTime += Time.deltaTime;            //attackTimeに毎フレームの時間を加算していく
+
+        if (attackTime > currentAttackTime)
+        {
+            canAttack = true;                    //指定時間を超えたら攻撃可能にする
+        }
     }
 
     void FixedUpdate()
@@ -143,7 +162,7 @@ public class Player : _Base
     void Move()
     {
         float x = _moveInputValue.x;            // ここを変更 InputSyste の値を得る
-        if(x != 0)
+        if(x != 1 && x != -1 && x != 0 )
         {   // 移動、左右どちらも処理する
             dir = x > 0 ? 1: -1;                // 向き
             rb.velocity = new Vector3(speed * x, rb.velocity.y, 0);
@@ -151,11 +170,19 @@ public class Player : _Base
             if(blendRate > 1){ blendRate = 1;}
             anim.SetFloat("speed", blendRate);
         }
+        else if (x == 1 || x == -1)
+        {
+            dir = x > 0 ? 1 : -1;                // 向き
+            rb.velocity = new Vector3(speed * x * dashSpeed, rb.velocity.y, 0);
+            anim.SetBool("dash", true);
+        }
         else
         {   // 停止、アニメーションを徐々に IDLE へ
             blendRate -= changeRate;
             if(blendRate < 0){blendRate = 0;}
             anim.SetFloat("speed", blendRate);
+            anim.SetBool("dash", false);
+
         }
         // 向き
         Vector2 scale = transform.localScale;
@@ -224,6 +251,28 @@ public class Player : _Base
             if(!isGround)
             {
                 isGround = true;
+            }
+        }
+
+        //敵の爆風で吹き飛ぶ ダメージも受ける
+        if (col.gameObject.tag == "Explosion")
+        {
+            rb.AddForce(transform.right * 1000 * -dir);
+
+            //hp処理
+            hp = hp - 5;
+            //hpをSliderに反映
+            slider.value = (float)hp / (float)hpMax;
+
+            if (hp < 0) { hp = 0; }
+            anim.SetInteger("hp", hp);
+            anim.SetTrigger("damage");
+            SoundPlay(seDamage);
+
+            if (hp <= 0)
+            {
+                slider.gameObject.SetActive(false);
+                SoundPlay(seDead);
             }
         }
     }
@@ -305,28 +354,6 @@ public class Player : _Base
         anim.SetTrigger("attack2");
         SoundPlay(seSlash1);*/
     }
-
-    /*void Magic()
-    {
-        if(isAtkMotion){return;}                 //攻撃中ならば攻撃できない
-
-        attackTime += Time.deltaTime;            //attackTimeに毎フレームの時間を加算していく
-
-        if(attackTime > currentAttackTime) 
-        {
-            canAttack = true;                    //指定時間を超えたら攻撃可能にする
-        }
-
-        if (canAttack)
-        {                
-            //第一引数に生成するオブジェクト、第二引数にVector3型の座標、第三引数に回転の情報
-            Instantiate(magic, magicPoint.position, transform.rotation);
-            canAttack = false;　              //攻撃フラグをfalseにする
-            attackTime = 0f;　                //attackTimeを0に戻す
-            anim.SetTrigger("magicFiring");
-            SoundPlay(seMagicS);
-         }
-    }*/
     
     void OnMagicCharge(InputAction.CallbackContext context)
     {
@@ -339,62 +366,37 @@ public class Player : _Base
 
     void OnMagicFiring(InputAction.CallbackContext context)
     {
-
         // コントローラー ID チェック
-        //if (deviceId != context.control.device.deviceId) { return; }
+        if (deviceId != context.control.device.deviceId) { return; }
 
         anim.SetBool("mgcCharge", false);
         //rb.bodyType = RigidbodyType2D.Dynamic;
 
-        //switch (mode)
-        switch (magic)
+        if (canAttack == true)
         {
-            //            case MgcMode.PowerS:
-            case 0:
-                MagicS();
-                canAttack = false;               //攻撃フラグをfalseにする
-                attackTime = 0f;                 //attackTimeを0に戻す
-                break;
-            //            case MgcMode.PowerM:
-            case 1:
-                MagicM();
-                canAttack = false;               //攻撃フラグをfalseにする
-                attackTime = 0f;                 //attackTimeを0に戻す
-                break;
-            //case MgcMode.PowerL:
-            case 2:
-                MagicL();
-                canAttack = false;               //攻撃フラグをfalseにする
-                attackTime = 0f;                 //attackTimeを0に戻す
-                break;
-        }
+            //switch (mode)
+            switch (magic.magicPower)
+            {
+                //            case MgcMode.PowerS:
+                case 0:
 
-        magic = 0;
-    }
-
-    int magic = 0;
-    //魔法チャージのイベント
-    public void MagicChargeEvent(int num)
-    {
-
-        //溜め段階
-        switch (num)
-        {
-            //溜め開始　sizeS
-            case 0:
-                magic = -1;
-                mode = MgcMode.PowerS;
-                break;
-            //sizeM
-            case 1:
-                magic = 1;
-                mode = MgcMode.PowerM;
-                break;
-            //sizeL
-            case 2:
-                magic = 2;
-                mode = MgcMode.PowerL;
-                break;
+                    MagicS();
+                    canAttack = false;               //攻撃フラグをfalseにする
+                    attackTime = 0f;                 //attackTimeを0に戻す
+                    break;
+                //            case MgcMode.PowerM:
+                case 1:
+                    MagicM();
+                    canAttack = false;               //攻撃フラグをfalseにする
+                    attackTime = 0f;                 //attackTimeを0に戻す
+                    break;
+                //case MgcMode.PowerL:
+                case 2:
+                    MagicL();
+                    canAttack = false;               //攻撃フラグをfalseにする
+                    attackTime = 0f;                 //attackTimeを0に戻す
+                    break;
+            }
         }
     }
 
@@ -420,6 +422,7 @@ public class Player : _Base
         Instantiate(magicL, magicPoint.position, transform.rotation);
         anim.SetTrigger("magicFiring");
         SoundPlay(seMagicL);
+        rb.velocity = new Vector3(5 * -dir, 0, 0);   //発射した反動で下がる
     }
 
 
@@ -494,6 +497,7 @@ public class Player : _Base
             if(hp <= 0)
             {
                 slider.gameObject.SetActive(false);
+                Invoke("Destroy", 3f);
                 SoundPlay(seDead);
             }
         }
@@ -504,6 +508,12 @@ public class Player : _Base
             //hpをSliderに反映
             slider.value = (float)hp / (float) hpMax;
         }
+    }
+
+    //消える
+    private void Destroy()
+    {
+        Destroy(this. gameObject);
     }
 
     //HPバーを追従させたい

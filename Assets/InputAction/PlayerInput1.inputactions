@@ -42,33 +42,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "MagicS",
-                    "type": "Button",
-                    "id": "c69da929-6696-4f12-9ae3-f1c2daf32c34",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "MagicM",
-                    "type": "Button",
-                    "id": "35002e02-20de-49f0-99e2-6bd63e055a9e",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "MagicL",
-                    "type": "Button",
-                    "id": "e578698a-4ead-41a5-8819-7c1cfdb76739",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "SlashOver",
                     "type": "Button",
                     "id": "a9b132e8-7c6c-4bcf-89cf-01b62aadce70",
@@ -262,7 +235,7 @@
                 },
                 {
                     "name": "",
-                    "id": "b04ccb73-e50f-406b-a297-23b26362d91c",
+                    "id": "2618e41d-159b-43cd-bef9-57d678d6064e",
                     "path": "<Gamepad>/buttonEast",
                     "interactions": "",
                     "processors": "",
@@ -334,50 +307,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "test",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "b048a707-3c17-4bc1-816a-1e3de139d6e2",
-                    "path": "<Gamepad>/buttonEast",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Gamepad",
-                    "action": "MagicS",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "44a5a48a-3902-4cf0-abb5-f1f999062e21",
-                    "path": "<Keyboard>/m",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "MagicS",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "44ebd80d-5f6f-4945-8381-3f30e083205f",
-                    "path": "<Gamepad>/buttonEast",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Gamepad",
-                    "action": "MagicM",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "73a60ac7-3e16-45bb-a3b8-5fcfaa3ed2a8",
-                    "path": "<Gamepad>/buttonEast",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Gamepad",
-                    "action": "MagicL",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -13,27 +13,27 @@ public class BossFlame : _Base
     float speed = 1.0f;    　　　　　　　　　　　    //移動速度
 
     Player pl;              　　　　　　　　　　　   //プレイヤー
-    //Player2 pl2;                                     //2P
+    Player pl2;                                      //2P
 
     enum BossMode{Standby, Setup, Attack};
     BossMode mode = BossMode.Standby;
 
     //float damageTime;        　　　　　　　　　　  //ダメージ硬直時間
-    float atkTime;               　　　　　　　　　 //攻撃間隔
-    float moveTime;                              //待ち時間
-    int   rndmJump;                              //ランダムでジャンプしたい用
+    float atkTime;               　　　　　　　　 　 //攻撃間隔
+    float moveTime;                                  //待ち時間
+    int   rndmJump;                                  //ランダムでジャンプしたい用
 
-    float atkTarget;                             //攻撃する方を選びたい
+    int atkTarget;                                   //攻撃する方を選びたい
 
     float speedX;
-    float dir = 1;                 　　　　　　　   //向き
-    //float dir2 = 1;
+    float dir = 1;                 　　　　　　　    //向き
+    float dir2 = 1;
 
-    float StartBossFightTime = 1.5f;             //ボス戦が始まる時間
+    float StartBossFightTime = 1.5f;                 //ボス戦が始まる時間
 
-    public Slider slider;                        //スライダー
+    public Slider slider;                            //スライダー
 
-    bool isLeft;                                 //左向き
+    bool isLeft;                                     //左向き
 
     public CameraController shake;
 
@@ -41,6 +41,7 @@ public class BossFlame : _Base
     EffekseerEffectAsset[] effect = null;
     readonly Vector2 breathPos = new Vector2(3.4f, 4.6f);
     readonly Vector2 impactPos = new Vector2(3.04f, -0.46f);
+    readonly Vector2 burstPos = new Vector2(0, 0);
     
 
     //リスタート
@@ -50,8 +51,8 @@ public class BossFlame : _Base
         isLeft = true;                          //左を向いている
         slider.value = 1;                       //スライダーを最大にする
         hp = hpMax;
-        pl = GameObject.Find("P1").GetComponent<Player>();
-        //pl2 = GameObject.Find("P2").GetComponent<Player2>();
+        pl = GameObject.Find("P1").GetComponent<Player>();  // 剣士
+        pl2 = GameObject.Find("P2").GetComponent<Player>(); // 魔法使い
         anim.SetFloat("speed", 0);              //アイドル
         anim.SetInteger("hp", hp);              //hp
 
@@ -60,19 +61,22 @@ public class BossFlame : _Base
         //エフェクトを取得する
         if(effect == null)
         {
-            effect = new EffekseerEffectAsset[2];
+            effect = new EffekseerEffectAsset[3];
             effect[0] = Resources.Load<EffekseerEffectAsset>("BreathL");
             effect[1] = Resources.Load<EffekseerEffectAsset>("IMPACT2");
+            effect[2] = Resources.Load<EffekseerEffectAsset>("Burst");
         }
     }
 
     void Update()
     {
+        /*
         //モンスターの向き
         dir = pl.transform.position.x > lx ? 1 : -1;   //1P
-        //dir2 = pl2.transform.position.x > lx ? 1 : -1; //2P
+        dir2 = pl2.transform.position.x > lx ? 1 : -1; //2P
         speedX = speed * dir;
         scaleX = -scale * dir;
+        */
 
         switch(mode)
         {
@@ -90,6 +94,20 @@ public class BossFlame : _Base
 
     void Standby()
     {
+        atkTarget = Random.Range(0, 5);  //0~5で乱数を得る
+
+        if(atkTarget <= 1) //1以下なら剣士の方を向く
+        {
+            dir = pl.transform.position.x > lx ? 1 : -1;
+        }
+        else if(atkTarget >= 2) //2以上なら魔法使いの方を向く
+        {
+            dir = pl2.transform.position.x > lx ? 1 : -1;
+        }
+
+        speedX = speed * dir;
+        scaleX = -scale * dir;
+
         anim.SetFloat("speed", 0);          　　　　　　//アイドルにする
         StartBossFightTime -= Time.deltaTime;
 
@@ -105,21 +123,21 @@ public class BossFlame : _Base
         //プレイヤー1との距離を取得
         float dis = Vector2.Distance(pl.transform.position, xy);
         //2Pとの距離
-        //float dis2 = Vector2.Distance(pl2.transform.position, xy);
+        float dis2 = Vector2.Distance(pl2.transform.position, xy);
         moveTime -= Time.deltaTime;
         rb.bodyType = RigidbodyType2D.Dynamic;  　　　   　//動くように戻す
 
         if(hp > 0)
         {
-            shake.Shake( 0.2f, 0.25f );                 //カメラを揺らす
+            shake.Shake( 0.2f, 0.25f );                    //カメラを揺らす
             rb.velocity = new Vector3(speedX, rb.velocity.y, 0);
             anim.SetFloat("speed", 1);      　　　　　 　　//歩く
         }
 
-        if(moveTime <= 0 || dis <=5f /*|| dis2 <= 5f*/)
+        if(moveTime <= 0 || dis <= 5f || dis2 <= 5f)
         {
-            atkTime = Random.Range(1f, 4f); 　　　　　 　　//1~4秒の間で乱数を得る
-            rndmJump = Random.Range(1, 6);               //1~6で乱数を得る
+            atkTime = Random.Range(1f, 3f); 　　　　　 　　//1~3秒の間で乱数を得る
+            rndmJump = Random.Range(1, 6);                 //1~6で乱数を得る
             mode = BossMode.Attack;
         }
     }
@@ -127,16 +145,29 @@ public class BossFlame : _Base
     void Attack()
     {
         anim.SetFloat("speed", 0);
-        //プレイヤーとの距離を取得
+        //1Pとの距離を取得
         float dis = Vector2.Distance(pl.transform.position, xy);
         //2Pとの距離を取得
-        //float dis2 = Vector2.Distance(pl2.transform.position, xy);
+        float dis2 = Vector2.Distance(pl2.transform.position, xy);
 
         atkTime  -= Time.deltaTime;
         if(atkTime <= 0)
         {
-           
-            if(dis > 0 && dis <= 6 /*|| dis2 > 3 && dis2 <= 6*/)
+
+            if (dis > 0 && dis <= 4 || dis2 > 0 && dis2 <= 4)
+            {
+                if (rndmJump == 1)
+                {
+                    anim.SetTrigger("attackF");
+                }
+                else
+                {
+                    anim.SetTrigger("attack");
+                    Invoke("BurstEffect", 0.6f);
+                    mode = BossMode.Standby;
+                }
+            }
+            else if (dis > 4 && dis <= 5 || dis2 > 4 && dis2 <= 5)
             {
                 if(rndmJump == 1)
                 {
@@ -148,7 +179,7 @@ public class BossFlame : _Base
                     mode = BossMode.Standby;
                 }
             }
-            else if(dis > 6 && dis <= 9 /*|| dis2 > 6 && dis2 <= 9*/)
+            else if(dis > 5 && dis <= 8 || dis2 > 5 && dis2 <= 8)
             {
                 if(rndmJump == 1)
                 {
@@ -162,7 +193,7 @@ public class BossFlame : _Base
                     mode = BossMode.Standby;
                 }
             }
-            else if(dis > 9 && dis <= 15 /*|| dis2 > 9 && dis2 <= 15*/)
+            else if(dis > 8 && dis <= 13 || dis2 > 8 && dis2 <= 13)
             {
                 if(rndmJump == 1)
                 {
@@ -176,7 +207,7 @@ public class BossFlame : _Base
                     mode = BossMode.Standby;
                 }
             }
-            else if(dis > 15 /*|| dis2 > 15*/)
+            else if(dis > 13 || dis2 > 13)
             {
                 anim.SetTrigger("attackF");
             }
@@ -195,10 +226,10 @@ public class BossFlame : _Base
                 break;
             case 1:     //飛び跳ねる
                 this.rb.AddForce(transform.up * 12700);
-                atkTarget = Random.Range(0, 4);        //1~4で乱数を得る
+                rndmJump = Random.Range(0, 5);        //1~4で乱数を得る
                 break;
             case -1:    //移動する・攻撃
-                if(atkTarget <= 1)
+                if(rndmJump <= 2)
                 {
                     if(isLeft)
                     {
@@ -217,7 +248,7 @@ public class BossFlame : _Base
                         SoundPlay(seAttack2);
                     }
                 }
-               /* else if(atkTarget >= 2)
+                else if(rndmJump >= 3)
                 {
                     if(isLeft)
                     {
@@ -235,7 +266,7 @@ public class BossFlame : _Base
                         SoundPlay(seAttack);
                         SoundPlay(seAttack2);
                     }
-                }*/
+                }
                 mode = BossMode.Setup;
                 break;
         }
@@ -291,6 +322,14 @@ public class BossFlame : _Base
 
         //左向きはスケールを設定する
         impact.SetScale(new Vector3(-dir, 1, 1));
+    }
+
+    public void BurstEffect()
+    {
+        EffekseerHandle burst = EffekseerSystem.PlayEffect(effect[2], xy + new Vector2(burstPos.x * dir, burstPos.y));
+
+        //左向きはスケールを設定する
+        burst.SetScale(new Vector3(-dir, 1, 1));
     }
 
 　　 //ダメージ処理

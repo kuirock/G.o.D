@@ -38,7 +38,7 @@ public class _Base : MonoBehaviour
         scale = gameObject.transform.localScale.x;          //元のサイズ
         sp    = GetComponent<SpriteRenderer>();
         #if UNITY_EDITOR
-            debug = GameObject.Find("DebugText").GetComponent<TextMeshProUGUI>();
+            //debug = GameObject.Find("DebugText").GetComponent<TextMeshProUGUI>();
         #endif
 
         Restart();

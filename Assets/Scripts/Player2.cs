@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class Player2 : _Base
 {
-    private PlayerInput2 playerInput2_;　//InputSystemで操作
+    private PlayerInput1 playerInput2_;　//InputSystemで操作
 
     [SerializeField]
     public AudioClip  seMagicS, seMagicL, seJump;  //サウンド
@@ -71,7 +71,7 @@ public class Player2 : _Base
 
         currentAttackTime = attackTime; //currentAttackTimeにattackTimeをセット。
 
-        playerInput2_ = new PlayerInput2();　　//コントローラーで操作する用
+        playerInput2_ = new PlayerInput1();　　//コントローラーで操作する用
         playerInput2_.Enable();
 
         /*//エフェクトを取得する

@@ -64,33 +64,6 @@ public partial class @PlayerInput1: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""MagicS"",
-                    ""type"": ""Button"",
-                    ""id"": ""c69da929-6696-4f12-9ae3-f1c2daf32c34"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""MagicM"",
-                    ""type"": ""Button"",
-                    ""id"": ""35002e02-20de-49f0-99e2-6bd63e055a9e"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""MagicL"",
-                    ""type"": ""Button"",
-                    ""id"": ""e578698a-4ead-41a5-8819-7c1cfdb76739"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""SlashOver"",
                     ""type"": ""Button"",
                     ""id"": ""a9b132e8-7c6c-4bcf-89cf-01b62aadce70"",
@@ -284,7 +257,7 @@ public partial class @PlayerInput1: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""b04ccb73-e50f-406b-a297-23b26362d91c"",
+                    ""id"": ""2618e41d-159b-43cd-bef9-57d678d6064e"",
                     ""path"": ""<Gamepad>/buttonEast"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -356,50 +329,6 @@ public partial class @PlayerInput1: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""test"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""b048a707-3c17-4bc1-816a-1e3de139d6e2"",
-                    ""path"": ""<Gamepad>/buttonEast"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""MagicS"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""44a5a48a-3902-4cf0-abb5-f1f999062e21"",
-                    ""path"": ""<Keyboard>/m"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""MagicS"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""44ebd80d-5f6f-4945-8381-3f30e083205f"",
-                    ""path"": ""<Gamepad>/buttonEast"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""MagicM"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""73a60ac7-3e16-45bb-a3b8-5fcfaa3ed2a8"",
-                    ""path"": ""<Gamepad>/buttonEast"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""MagicL"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1019,9 +948,6 @@ public partial class @PlayerInput1: IInputActionCollection2, IDisposable
         m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
         m_Player_Shield = m_Player.FindAction("Shield", throwIfNotFound: true);
         m_Player_Magic = m_Player.FindAction("Magic", throwIfNotFound: true);
-        m_Player_MagicS = m_Player.FindAction("MagicS", throwIfNotFound: true);
-        m_Player_MagicM = m_Player.FindAction("MagicM", throwIfNotFound: true);
-        m_Player_MagicL = m_Player.FindAction("MagicL", throwIfNotFound: true);
         m_Player_SlashOver = m_Player.FindAction("SlashOver", throwIfNotFound: true);
         m_Player_Slash = m_Player.FindAction("Slash", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
@@ -1106,9 +1032,6 @@ public partial class @PlayerInput1: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Dash;
     private readonly InputAction m_Player_Shield;
     private readonly InputAction m_Player_Magic;
-    private readonly InputAction m_Player_MagicS;
-    private readonly InputAction m_Player_MagicM;
-    private readonly InputAction m_Player_MagicL;
     private readonly InputAction m_Player_SlashOver;
     private readonly InputAction m_Player_Slash;
     private readonly InputAction m_Player_Jump;
@@ -1121,9 +1044,6 @@ public partial class @PlayerInput1: IInputActionCollection2, IDisposable
         public InputAction @Dash => m_Wrapper.m_Player_Dash;
         public InputAction @Shield => m_Wrapper.m_Player_Shield;
         public InputAction @Magic => m_Wrapper.m_Player_Magic;
-        public InputAction @MagicS => m_Wrapper.m_Player_MagicS;
-        public InputAction @MagicM => m_Wrapper.m_Player_MagicM;
-        public InputAction @MagicL => m_Wrapper.m_Player_MagicL;
         public InputAction @SlashOver => m_Wrapper.m_Player_SlashOver;
         public InputAction @Slash => m_Wrapper.m_Player_Slash;
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
@@ -1149,15 +1069,6 @@ public partial class @PlayerInput1: IInputActionCollection2, IDisposable
             @Magic.started += instance.OnMagic;
             @Magic.performed += instance.OnMagic;
             @Magic.canceled += instance.OnMagic;
-            @MagicS.started += instance.OnMagicS;
-            @MagicS.performed += instance.OnMagicS;
-            @MagicS.canceled += instance.OnMagicS;
-            @MagicM.started += instance.OnMagicM;
-            @MagicM.performed += instance.OnMagicM;
-            @MagicM.canceled += instance.OnMagicM;
-            @MagicL.started += instance.OnMagicL;
-            @MagicL.performed += instance.OnMagicL;
-            @MagicL.canceled += instance.OnMagicL;
             @SlashOver.started += instance.OnSlashOver;
             @SlashOver.performed += instance.OnSlashOver;
             @SlashOver.canceled += instance.OnSlashOver;
@@ -1186,15 +1097,6 @@ public partial class @PlayerInput1: IInputActionCollection2, IDisposable
             @Magic.started -= instance.OnMagic;
             @Magic.performed -= instance.OnMagic;
             @Magic.canceled -= instance.OnMagic;
-            @MagicS.started -= instance.OnMagicS;
-            @MagicS.performed -= instance.OnMagicS;
-            @MagicS.canceled -= instance.OnMagicS;
-            @MagicM.started -= instance.OnMagicM;
-            @MagicM.performed -= instance.OnMagicM;
-            @MagicM.canceled -= instance.OnMagicM;
-            @MagicL.started -= instance.OnMagicL;
-            @MagicL.performed -= instance.OnMagicL;
-            @MagicL.canceled -= instance.OnMagicL;
             @SlashOver.started -= instance.OnSlashOver;
             @SlashOver.performed -= instance.OnSlashOver;
             @SlashOver.canceled -= instance.OnSlashOver;
@@ -1439,9 +1341,6 @@ public partial class @PlayerInput1: IInputActionCollection2, IDisposable
         void OnDash(InputAction.CallbackContext context);
         void OnShield(InputAction.CallbackContext context);
         void OnMagic(InputAction.CallbackContext context);
-        void OnMagicS(InputAction.CallbackContext context);
-        void OnMagicM(InputAction.CallbackContext context);
-        void OnMagicL(InputAction.CallbackContext context);
         void OnSlashOver(InputAction.CallbackContext context);
         void OnSlash(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
